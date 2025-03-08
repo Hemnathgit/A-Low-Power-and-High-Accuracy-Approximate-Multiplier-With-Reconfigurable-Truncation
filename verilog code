@@ -1,0 +1,18 @@
+module Approx_Multiplier #(parameter N = 8, T = 4) (  // N = Input bit width, T = Truncated bits
+    input [N-1:0] A, B,   // Two N-bit input numbers
+    input trunc_enable,   // Control signal to enable truncation
+    output reg [2*N-1:0] P // Output product
+);
+    reg [2*N-1:0] full_product;
+    
+    always @(*) begin
+        // Full multiplication without truncation
+        full_product = A * B;
+
+        // Apply truncation if enabled
+        if (trunc_enable) 
+            P = {full_product[2*N-1:T], {T{1'b0}}}; // Truncate LSBs and shift
+        else 
+            P = full_product; // Full precision multiplication
+    end
+endmodule
